@@ -1,0 +1,31 @@
+{
+  "name": "summora-ai",
+  "version": "1.0.0",
+  "description": "Summora AI - AI Notes Summarizer & Exam Analyzer for College Students",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node tests/test-suite.js"
+  },
+  "keywords": [
+    "ai",
+    "education",
+    "exam-prep",
+    "notes-summarizer",
+    "gemini-api"
+  ],
+  "author": "Summora Team",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.116.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "mammoth": "^1.12.3",
+    "multer": "^2.4.0",
+    "pdf-parse": "^2.4.5",
+    "tesseract.js": "^7.0.0"
+  }
+}

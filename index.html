@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summora AI – AI Notes Summarizer & Exam Analyzer</title>
+    <meta name="description"
+        content="Summora AI - study assistant for college students. Turn lecture notes into summaries, important topics, exam questions, revision notes, and interactive flashcards.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-auth-modal.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h1>Summora <span>AI</span></h1>
+                        <span class="brand-tagline">Turn notes into exam-ready knowledge</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Navigation</div>
+                <a href="#" class="nav-link active" data-view="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link" data-view="analyzer">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Notes Analyzer</span>
+                </a>
+
+                <div class="nav-section-title">Analysis Tools</div>
+                <a href="#" class="nav-link" data-view="summaries">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Summaries</span>
+                </a>
+                <a href="#" class="nav-link" data-view="topics">
+                    <i class="fa-solid fa-fire-flame-curved"></i>
+                    <span>Important Topics</span>
+                </a>
+                <a href="#" class="nav-link" data-view="questions">
+                    <i class="fa-solid fa-clipboard-question"></i>
+                    <span>Exam Questions</span>
+                </a>
+                <a href="#" class="nav-link" data-view="revision">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Quick Revision</span>
+                </a>
+                <a href="#" class="nav-link" data-view="flashcards">
+                    <i class="fa-solid fa-clone"></i>
+                    <span>Flashcards</span>
+                </a>
+
+                <div class="nav-section-title">Account</div>
+                <a href="#" class="nav-link" id="navAuthTrigger">
+                    <i class="fa-solid fa-user-circle"></i>
+                    <span id="navAuthText">Login / Sign Up</span>
+                </a>
+
+                <div class="nav-section-title">Support</div>
+                <a href="#" class="nav-link" id="navChatTrigger">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>AI Chatbot</span>
+                </a>
+                <a href="#" class="nav-link" data-view="settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="assistant-badge">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="assistant-info">
+                    <span>Summora Assistant</span>
+                    <small>v1.0 • Gemini Powered</small>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar Mobile Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Top Navbar -->
+            <header class="top-navbar">
+                <div class="navbar-left">
+                    <button class="menu-toggle" id="menuToggleBtn" aria-label="Open Sidebar Menu">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                    <div class="page-title-group">
+                        <h2 id="currentPageTitle">Dashboard</h2>
+                    </div>
+                    <div class="mode-badge demo" id="modeBadge" title="AI Operating Mode">
+                        <i class="fa-solid fa-bolt" id="modeBadgeIcon"></i>
+                        <span id="modeBadgeText">Demo Mode</span>
+                    </div>
+                </div>
+
+                <div class="navbar-right">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchInput" placeholder="Search notes & study material...">
+                    </div>
+
+                    <button class="nav-icon-btn" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-moon" id="themeIcon"></i>
+                    </button>
+
+                    <button class="nav-icon-btn" id="notificationBtn" title="Notifications">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+
+                    <div class="user-profile">
+                        <div class="avatar">ST</div>
+                        <div class="profile-info">
+                            <div class="greeting" id="timeGreeting">Good evening, Student 👋</div>
+                            <span class="subtext">Ready for your next revision?</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="content-area">
+                <!-- Demo Mode Notification Banner -->
+                <div class="demo-banner" id="demoBanner">
+                    <div class="demo-banner-content">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span><strong>Demo Mode Active:</strong> Ensure your Gemini API key is configured in <code>.env</code> and start the backend server with <code>npm start</code> for live AI generation.</span>
+                    </div>
+                    <button class="demo-dismiss" id="dismissDemoBanner" aria-label="Dismiss Banner">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- 1. DASHBOARD VIEW -->
+                <section class="view-section active" id="dashboard-view">
+                    <!-- Dashboard Welcome Section -->
+                    <div class="dashboard-welcome">
+                        <div class="welcome-text-group">
+                            <h2 class="welcome-headline">
+                                <span class="welcome-gradient-text">Hey, learner! Your next chapter starts here.</span>
+                                <span class="welcome-emoji" aria-hidden="true">💜</span>
+                            </h2>
+                            <p class="welcome-subtitle">Let's make learning simpler.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section-header">
+                        <h3>Recent Notes</h3>
+                        <button class="btn-primary-sm" id="newAnalysisBtn">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Analyze New Notes</span>
+                        </button>
+                    </div>
+
+                    <div class="recent-notes-grid" id="recentNotesGrid">
+                        <!-- Dynamic Recent Notes Cards -->
+                    </div>
+                </section>
+
+                <!-- 2. NOTES ANALYZER VIEW -->
+                <section class="view-section" id="analyzer-view">
+                    <div class="analyzer-container">
+                        <div class="section-header-centered">
+                            <h2>Analyze Your Notes</h2>
+                            <p>Upload your study material or paste your notes below and let AI convert them into
+                                exam-ready resources.</p>
+                        </div>
+                        <div class="analyzer-card">
+                            <div class="meta-inputs-grid">
+                                <div class="input-group">
+                                    <label for="subjectInput"><i class="fa-solid fa-book"></i> Subject Name</label>
+                                    <input type="text" id="subjectInput"
+                                        placeholder="e.g. Operating Systems, Financial Accounting (or leave blank for auto-detection)"
+                                        value="">
+                                </div>
+                                <div class="input-group">
+                                    <label for="examDateInput"><i class="fa-solid fa-calendar-days"></i> Target Exam
+                                        Date</label>
+                                    <input type="date" id="examDateInput">
+                                </div>
+                            </div>
+
+                            <!-- Upload Box -->
+                            <div class="upload-dropzone" id="uploadDropzone">
+                                <input type="file" id="fileInput" accept=".txt,.pdf,.docx,.jpg,.jpeg,.png,.webp,.heic" style="display: none;">
+                                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                <div class="upload-title">Drag & drop your notes or textbook here</div>
+                                <div class="upload-subtitle">or <span
+                                        style="color: var(--primary); font-weight: 600;">Browse Files</span> from your
+                                    device</div>
+                                <div class="file-types-badge">Supports PDF, DOCX, TXT, Images (Multi-page Chunking & OCR enabled)</div>
+                            </div>
+
+                            <!-- Selected File Details -->
+                            <div class="file-details-box" id="fileDetailsBox">
+                                <div class="file-info">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    <span id="fileName">lecture_notes.pdf</span>
+                                    <small id="fileSize" style="color: var(--text-muted); font-weight: normal;">(0 KB)</small>
+                                </div>
+                                <button class="remove-file-btn" id="removeFileBtn" title="Remove File">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+
+                            <!-- Paste Textarea -->
+                            <div class="textarea-group">
+                                <textarea id="notesTextarea"
+                                    placeholder="Paste your lecture notes, textbook chapters, or study material here..."></textarea>
+                                <div class="textarea-tools">
+                                    <button class="clear-btn" id="clearNotesBtn">
+                                        <i class="fa-solid fa-eraser"></i> Clear Text
+                                    </button>
+                                    <span id="charCounter">0 characters</span>
+                                </div>
+                            </div>
+
+                            <!-- Marks Selection Control Panel (Requirement 4) -->
+                            <div class="marks-control-section">
+                                <div class="marks-header">
+                                    <div class="options-title" style="margin-bottom: 0;">
+                                        <i class="fa-solid fa-graduation-cap"></i> Target Examination Marks
+                                    </div>
+                                    <div class="marks-action-btns">
+                                        <button type="button" class="btn-text-action" id="selectAllMarksBtn">Select All</button>
+                                        <span class="divider">•</span>
+                                        <button type="button" class="btn-text-action" id="clearAllMarksBtn">Clear</button>
+                                    </div>
+                                </div>
+                                <p class="marks-description">Choose the marks categories to generate. Summora AI will create tailored exam-style questions strictly matching your selection.</p>
+                                
+                                <div class="marks-chips-grid" id="marksChipsGrid">
+                                    <label class="mark-chip" data-mark="1"><input type="checkbox" value="1"> 1 Mark</label>
+                                    <label class="mark-chip checked" data-mark="2"><input type="checkbox" value="2" checked> 2 Marks</label>
+                                    <label class="mark-chip" data-mark="3"><input type="checkbox" value="3"> 3 Marks</label>
+                                    <label class="mark-chip checked" data-mark="5"><input type="checkbox" value="5" checked> 5 Marks</label>
+                                    <label class="mark-chip" data-mark="8"><input type="checkbox" value="8"> 8 Marks</label>
+                                    <label class="mark-chip checked" data-mark="10"><input type="checkbox" value="10" checked> 10 Marks</label>
+                                    <label class="mark-chip" data-mark="12"><input type="checkbox" value="12"> 12 Marks</label>
+                                    <label class="mark-chip" data-mark="13"><input type="checkbox" value="13"> 13 Marks</label>
+                                    <label class="mark-chip" data-mark="15"><input type="checkbox" value="15"> 15 Marks</label>
+                                </div>
+
+                                <div class="q-config-row">
+                                    <label for="questionsPerTopicSelect"><i class="fa-solid fa-list-check"></i> Questions per Topic:</label>
+                                    <select id="questionsPerTopicSelect" class="form-select-sm">
+                                        <option value="3">3 questions per topic</option>
+                                        <option value="5" selected>5 questions per topic (Default)</option>
+                                        <option value="8">8 questions per topic (Comprehensive)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Options Checkboxes -->
+                            <div class="options-title"><i class="fa-solid fa-sliders"></i> Select Output AI Modules
+                            </div>
+                            <div class="options-grid" id="optionsGrid">
+                                <label class="option-checkbox-card checked">
+                                    <input type="checkbox" name="option" value="summary" checked>
+                                    <span>☑ Summary</span>
+                                </label>
+                                <label class="option-checkbox-card checked">
+                                    <input type="checkbox" name="option" value="importantTopics" checked>
+                                    <span>☑ Important Topics</span>
+                                </label>
+                                <label class="option-checkbox-card checked">
+                                    <input type="checkbox" name="option" value="definitions" checked>
+                                    <span>☑ Key Definitions</span>
+                                </label>
+                                <label class="option-checkbox-card checked">
+                                    <input type="checkbox" name="option" value="examQuestions" checked>
+                                    <span>☑ Exam Questions</span>
+                                </label>
+                                <label class="option-checkbox-card checked">
+                                    <input type="checkbox" name="option" value="revisionNotes" checked>
+                                    <span>☑ Quick Revision Notes</span>
+                                </label>
+                                <label class="option-checkbox-card checked">
+                                    <input type="checkbox" name="option" value="difficultConcepts" checked>
+                                    <span>☑ Difficult Concepts</span>
+                                </label>
+                                <label class="option-checkbox-card checked">
+                                    <input type="checkbox" name="option" value="flashcards" checked>
+                                    <span>☑ Flashcards</span>
+                                </label>
+                            </div>
+
+                            <button class="btn-analyze-large" id="analyzeBtn">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Analyze Notes with AI</span>
+                            </button>
+                        </div>
+
+                        <!-- Loading State Overlay -->
+                        <div class="loading-overlay" id="loadingOverlay">
+                            <div class="spinner-pulse">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <h3>AI is analyzing your notes<span
+                                    class="dots-loader"><span>.</span><span>.</span><span>.</span></span></h3>
+                            <p id="loadingStatusText">Extracting multi-page content, checking topics, and generating grounded exam questions...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. RESULTS DASHBOARD / DETAILED VIEWS -->
+                <section class="view-section" id="results-view">
+                    <div class="results-header-bar">
+                        <div class="results-title-info">
+                            <h3 id="resultSubjectTitle">Document Study Pack</h3>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);" id="resultMetaDate">Analyzed on
+                                Today</span>
+                        </div>
+                        <div class="results-actions">
+                            <button class="btn-secondary-sm" id="uploadAnotherBtn">
+                                <i class="fa-solid fa-file-circle-plus"></i> Upload Another File
+                            </button>
+                            <button class="btn-secondary-sm" id="reAnalyzeBtn">
+                                <i class="fa-solid fa-rotate"></i> Re-Analyze
+                            </button>
+                            <button class="btn-primary-sm" id="downloadPackBtn">
+                                <i class="fa-solid fa-download"></i> Download Study Pack
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1. DOCUMENT INFORMATION CARD (Requirement 6) -->
+                    <div class="result-card doc-meta-card" id="docInfoSection">
+                        <div class="doc-meta-grid">
+                            <div class="doc-meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-file"></i> Document Source:</span>
+                                <span class="meta-val" id="docFilename">Uploaded Material</span>
+                            </div>
+                            <div class="doc-meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-book-bookmark"></i> Detected Subject:</span>
+                                <span class="meta-val" id="docDetectedSubject">General Notes</span>
+                            </div>
+                            <div class="doc-meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-layer-group"></i> Coverage & Pages:</span>
+                                <span class="meta-val" id="docPageCoverage">1 Page</span>
+                            </div>
+                            <div class="doc-meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-circle-check"></i> Processing Status:</span>
+                                <span class="meta-val status-badge success" id="docStatus">Complete</span>
+                            </div>
+                        </div>
+                        <div class="doc-warnings-box" id="docWarningsBox" style="display: none;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <div id="docWarningsText"></div>
+                        </div>
+                    </div>
+
+                    <!-- SUMMARY SECTION -->
+                    <div class="result-card" id="summarySection">
+                        <div class="card-title-group">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <h3>AI Summary</h3>
+                        </div>
+                        <div class="summary-box" id="summaryShortText">
+                            <!-- Dynamic Short Summary -->
+                        </div>
+
+                        <div class="summary-list-group">
+                            <h4><i class="fa-solid fa-key"></i> Main Concepts Covered</h4>
+                            <ul class="summary-list" id="summaryMainConcepts">
+                                <!-- Dynamic List -->
+                            </ul>
+                        </div>
+
+                        <div class="summary-list-group">
+                            <h4><i class="fa-solid fa-circle-exclamation"></i> Important Exam Takeaways</h4>
+                            <ul class="summary-list" id="summaryImportantPoints">
+                                <!-- Dynamic List -->
+                            </ul>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn-secondary-sm" id="copySummaryBtn"><i class="fa-regular fa-copy"></i> Copy
+                                Summary</button>
+                        </div>
+                    </div>
+
+                    <!-- IMPORTANT TOPICS SECTION -->
+                    <div class="result-card" id="topicsSection">
+                        <div class="card-title-group">
+                            <i class="fa-solid fa-fire-flame-curved"></i>
+                            <h3>Important Topics & Exam Weightage</h3>
+                        </div>
+                        <div class="topics-grid" id="topicsContainer">
+                            <!-- Dynamic Topic Cards -->
+                        </div>
+                    </div>
+
+                    <!-- KEY DEFINITIONS SECTION -->
+                    <div class="result-card" id="definitionsSection">
+                        <div class="card-title-group">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                            <h3>Key Definitions & Terminology</h3>
+                        </div>
+                        <div class="definitions-grid" id="definitionsContainer">
+                            <!-- Dynamic Definition Cards -->
+                        </div>
+                    </div>
+
+                    <!-- 5. FORMULAS, DEFINITIONS & KEY POINTS (Requirement 6.5) -->
+                    <div class="result-card" id="formulasSection" style="display: none;">
+                        <div class="card-title-group">
+                            <i class="fa-solid fa-square-root-variable"></i>
+                            <h3>Formulas & Core Rules (Document Grounded)</h3>
+                        </div>
+                        <div class="formulas-grid" id="formulasContainer">
+                            <!-- Dynamic Formula Cards -->
+                        </div>
+                    </div>
+
+                    <!-- EXAM QUESTIONS GENERATOR SECTION -->
+                    <div class="result-card" id="questionsSection">
+                        <div class="card-title-group" style="justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <i class="fa-solid fa-clipboard-question"></i>
+                                <h3>Important Questions by Marks</h3>
+                            </div>
+                            <span class="question-marks-badge" id="totalQuestionsCountBadge">0 Questions</span>
+                        </div>
+
+                        <div class="disclaimer-banner">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>AI-generated examination questions grounded strictly in your uploaded notes. Answers include key points and model outlines.</span>
+                        </div>
+
+                        <!-- Dynamic Category Tabs based on user's selected marks -->
+                        <div class="questions-category-tabs" id="questionsCategoryTabs">
+                            <button class="q-tab-btn active" data-marks="all">All Selected Marks</button>
+                        </div>
+
+                        <div class="questions-list" id="questionsContainer">
+                            <!-- Dynamic Question Cards grouped by topic and mark -->
+                        </div>
+
+                        <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn-secondary-sm" id="moreQuestionsBtn">
+                                <i class="fa-solid fa-sliders"></i> Change Marks & Regenerate Questions
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- QUICK REVISION NOTES -->
+                    <div class="result-card" id="revisionSection">
+                        <div class="card-title-group">
+                            <i class="fa-solid fa-bolt"></i>
+                            <h3>Quick Revision Notes</h3>
+                        </div>
+                        <ul class="revision-bullets" id="revisionContainer">
+                            <!-- Dynamic Bullet List -->
+                        </ul>
+                    </div>
+
+                    <!-- DIFFICULT CONCEPTS SECTION -->
+                    <div class="result-card" id="difficultSection">
+                        <div class="card-title-group">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <h3>Topics You May Need to Review</h3>
+                        </div>
+                        <div id="difficultContainer">
+                            <!-- Dynamic Difficult Concept Cards -->
+                        </div>
+                    </div>
+
+                    <!-- FLASHCARDS SECTION -->
+                    <div class="result-card" id="flashcardsSection">
+                        <div class="card-title-group">
+                            <i class="fa-solid fa-clone"></i>
+                            <h3>Interactive Study Flashcards</h3>
+                        </div>
+
+                        <div class="flashcards-container">
+                            <div class="flashcard-stage">
+                                <div class="flashcard" id="flashcardElement">
+                                    <div class="card-face front">
+                                        <div class="card-label">Question / Term</div>
+                                        <div class="card-content-text" id="fcFrontText">Click to reveal answer</div>
+                                    </div>
+                                    <div class="card-face back">
+                                        <div class="card-label">Answer / Definition</div>
+                                        <div class="card-content-text" id="fcBackText">Definition text here...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flashcard-controls">
+                                <button class="btn-secondary-sm" id="fcPrevBtn"><i class="fa-solid fa-arrow-left"></i>
+                                    Prev</button>
+                                <button class="btn-primary-sm" id="fcFlipBtn"><i class="fa-solid fa-rotate"></i> Flip
+                                    Card</button>
+                                <button class="btn-secondary-sm" id="fcNextBtn">Next <i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                            <div class="flashcard-counter" id="fcCounter" style="margin-top: 14px;">Card 1 of 5</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. SETTINGS & ABOUT VIEW -->
+                <section class="view-section" id="settings-view">
+                    <div class="analyzer-container">
+                        <div class="section-header-centered">
+                            <h2>Application Settings</h2>
+                            <p>Manage API configuration, theme, and local stored history.</p>
+                        </div>
+
+                        <div class="analyzer-card">
+                            <h3 style="margin-bottom: 16px; font-family: var(--font-heading);"><i
+                                    class="fa-solid fa-plug"></i> Gemini AI Connection</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
+                                Summora AI connects to Google's Gemini models via <code>server.js</code>.
+                                Configure <code>GEMINI_API_KEY</code> in your <code>.env</code> file and run <code>npm start</code>.
+                            </p>
+
+                            <div
+                                style="padding: 16px; background-color: var(--bg-input); border-radius: var(--radius-md); margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <strong>API Proxy Status:</strong>
+                                    <span id="apiStatusText"
+                                        style="color: var(--success); font-weight: 600; margin-left: 8px;">Active</span>
+                                </div>
+                                <button class="btn-secondary-sm" id="checkApiBtn"><i
+                                        class="fa-solid fa-arrows-rotate"></i> Check Connection</button>
+                            </div>
+
+                            <h3 style="margin-bottom: 16px; font-family: var(--font-heading);"><i
+                                    class="fa-solid fa-database"></i> Storage & History</h3>
+                            <button class="btn-secondary-sm" id="clearStorageBtn" style="color: var(--danger);">
+                                <i class="fa-solid fa-trash-can"></i> Clear Saved Recent Notes & History
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Floating AI Chatbot Widget -->
+    <button class="chat-widget-btn" id="chatWidgetBtn" aria-label="Open AI Assistant Chatbot" title="Ask Summora AI">
+        <i class="fa-solid fa-message"></i>
+    </button>
+
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h4>Summora AI Assistant</h4>
+                <p>Ask questions about your notes</p>
+            </div>
+            <button class="chat-close-btn" id="chatCloseBtn" aria-label="Close Chat">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+            <div class="chat-preset-prompts">
+                <div class="preset-chip" data-prompt="What is the most important topic?">🔥 Most important topic?</div>
+                <div class="preset-chip" data-prompt="Explain this concept simply.">💡 Explain simply</div>
+                <div class="preset-chip" data-prompt="Give me a 5-mark question.">📝 5-mark question</div>
+                <div class="preset-chip" data-prompt="Summarize this chapter.">📑 Summarize notes</div>
+                <div class="preset-chip" data-prompt="Create a quick revision plan.">⚡ Quick revision plan</div>
+            </div>
+
+            <div class="chat-msg bot">
+                <div class="msg-bubble">
+                    Hello! I'm Summora, your AI study assistant. Ask me anything about your study notes!
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-footer">
+            <form class="chat-input-form" id="chatForm">
+                <input type="text" id="chatInput" placeholder="Ask a question about your notes..." autocomplete="off">
+                <button type="submit" class="chat-send-btn" aria-label="Send Message">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModalOverlay">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="authCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <div class="brand-icon" style="margin-bottom: 12px; font-size: 2rem;">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h3 id="authModalTitle">Welcome Back</h3>
+                <p id="authModalSubtitle">Sign in to save your notes & summaries.</p>
+            </div>
+            <div class="modal-body">
+                <form id="authForm">
+                    <div class="form-group" id="nameGroup" style="display: none;">
+                        <label for="authName">Full Name</label>
+                        <input type="text" id="authName" placeholder="Enter your name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="authEmail">Email Address</label>
+                        <input type="email" id="authEmail" placeholder="you@student.edu" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="authPassword">Password</label>
+                        <input type="password" id="authPassword" placeholder="••••••••" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;" id="authSubmitBtn">Sign In</button>
+                </form>
+                <div style="text-align: center; margin-top: 16px;">
+                    <button class="btn-secondary-sm" id="authToggleBtn" style="border: none; background: transparent; padding: 0;">Don't have an account? Sign up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Supabase Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Custom App JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
